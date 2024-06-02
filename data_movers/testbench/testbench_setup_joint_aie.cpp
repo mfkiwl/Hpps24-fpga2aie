@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     for (unsigned int i = 0; i < SYMBOLS*SYMBOLS; i++) {
         histogram_rows[i] = i;
     }
-    setup_aie(image_size, histogram_rows, s_0, s_1, s_2, s_3, s_4, s_5, s_6, s_7);
+    setup_joint_aie(image_size, histogram_rows, s_0, s_1, s_2, s_3, s_4, s_5, s_6, s_7);
 
     // If the function worked I can print values in the stream and check them
     for(unsigned int i = 0; i < (int) LOOPS_J*8 +1 ; i++) {

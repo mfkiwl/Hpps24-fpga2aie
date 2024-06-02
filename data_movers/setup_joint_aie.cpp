@@ -31,7 +31,7 @@ SOFTWARE.
 
 extern "C" {
 
-void setup_aie(
+void setup_joint_aie(
 	int image_size, 
 	int* histogram_rows, 
 	hls::stream<int>& s_0, 

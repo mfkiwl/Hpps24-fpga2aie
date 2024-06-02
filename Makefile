@@ -38,7 +38,7 @@ help::
 	$(ECHO) ""
 
 
-# Build hareware (xclbin) objects
+# Build hardware (xclbin) objects
 build_hw: compile_data_movers compile_aie hw_link
 
 compile_aie:
@@ -56,7 +56,8 @@ build_sw:
 
 testbench_all:
 	make -C ./aie aie_compile_x86
-	make -C ./data_movers testbench_setupaie
+	make -C ./data_movers testbench_setup_joint_aie
+	make -C ./data_movers testbench_setup_marginal_aie
 	make -C ./data_movers testbench_sink_from_aie
 
 

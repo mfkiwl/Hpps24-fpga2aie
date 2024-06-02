@@ -170,7 +170,7 @@ public:
             std::ostringstream input_name;
             std::ostringstream file_name;
             input_name << "joint_histo_" << i;
-            file_name << "data/joint_histo_" << i << ".txt";
+            file_name << "data/joint_test_" << i << ".txt";
 		    joint_histo[i] = input_plio::create(input_name.str(), plio_32_bits, file_name.str());
 
             source(joint_entropy[i])  = "src/entropy_vect.cpp";
@@ -183,7 +183,7 @@ public:
 
 		marginal_entropy = kernel::create(marginal_entropy_kernel_function);
 
-		marginal_histo = input_plio::create("marginal_histo", plio_32_bits, "data/marginal.txt");
+		marginal_histo = input_plio::create("marginal_histo", plio_32_bits, "data/marginal_test.txt");
 
 		source(marginal_entropy)  = "src/entropy_vect.cpp";
 		headers(marginal_entropy) = {"src/mutual_entropy_kernels.h","../common/common.h"};

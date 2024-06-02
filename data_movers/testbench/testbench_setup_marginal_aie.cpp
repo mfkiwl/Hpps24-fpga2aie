@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     for (unsigned int i = 0; i < 2*SYMBOLS; i++) {
         histogram_rows[i] = i;
     }
-    setup_aie(image_size, histogram_rows, s);
+    setup_marginal_aie(image_size, histogram_rows, s);
 
     // If the function worked I can print values in the stream and check them
     for(unsigned int i = 0; i < (int) LOOPS_M*8 +1 ; i++) {

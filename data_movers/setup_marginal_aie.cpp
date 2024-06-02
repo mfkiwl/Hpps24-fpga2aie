@@ -31,7 +31,7 @@ SOFTWARE.
 
 extern "C" {
 
-void setup_aie(int image_size, int* histogram_rows, hls::stream<int>& s) {
+void setup_marginal_aie(int image_size, int* histogram_rows, hls::stream<int>& s) {
 
 	#pragma HLS interface m_axi port=histogram_rows depth=100 offset=slave bundle=gmem0
 	#pragma HLS interface axis port=s

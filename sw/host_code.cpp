@@ -55,8 +55,9 @@ std::ostream& bold_on(std::ostream& os);
 std::ostream& bold_off(std::ostream& os);
 
 int checkResult(float* nums_joint, float* nums_marginal, float* output_buffer, float image_size, float true_result) {
-    if (*output_buffer!=true_result) {
-        printf("Error: %f != %f {reference, result}",reference, aie_result);
+    float error = 10e-1;
+    if (*output_buffer <= true_result+error && *output_buffer >= true_result-error) {
+        printf("Error: %f != %f {output_buffer, true_result}", *output_buffer, true_result);
         return EXIT_FAILURE;
     }
 
@@ -66,7 +67,7 @@ int checkResult(float* nums_joint, float* nums_marginal, float* output_buffer, f
 
 int main(int argc, char *argv[]) {
     int image_size = 1024000;
-    float result = 4.487615108;
+    float true_result = -6812.255843199717;
     float nums_joint[SYMBOLS*SYMBOLS];
     for (int i=0; i<SYMBOLS*SYMBOLS; i++) 
         nums_joint[i] = i;
@@ -94,12 +95,12 @@ int main(int argc, char *argv[]) {
 
     // get memory bank groups for device buffer - required for axi master input/ouput
     xrtMemoryGroup bank_output  = krnl_sink_from_aie.group_id(arg_sink_from_aie_output);
-    xrtMemoryGroup bank_input  = krnl_setup_joint_aie.group_id(arg_setup_joint_aie_histogram_rows);
-    xrtMemoryGroup bank_input  = krnl_setup_marginal_aie.group_id(arg_setup_marginal_aie_histogram_rows);
+    xrtMemoryGroup bank_input_0  = krnl_setup_joint_aie.group_id(arg_setup_joint_aie_histogram_rows);
+    xrtMemoryGroup bank_input_1  = krnl_setup_marginal_aie.group_id(arg_setup_marginal_aie_histogram_rows);
 
     // create device buffers - if you have to load some data, here they are
-    xrt::bo buffer_setup_joint_aie= xrt::bo(device, SYMBOLS*SYMBOLS * sizeof(float), xrt::bo::flags::normal, bank_input); 
-    xrt::bo buffer_setup_marginal_aie= xrt::bo(device, SYMBOLS*2 * sizeof(float), xrt::bo::flags::normal, bank_input); 
+    xrt::bo buffer_setup_joint_aie= xrt::bo(device, SYMBOLS*SYMBOLS * sizeof(float), xrt::bo::flags::normal, bank_input_0); 
+    xrt::bo buffer_setup_marginal_aie= xrt::bo(device, SYMBOLS*2 * sizeof(float), xrt::bo::flags::normal, bank_input_1); 
     xrt::bo buffer_sink_from_aie = xrt::bo(device, 1 * sizeof(float), xrt::bo::flags::normal, bank_output); 
 
     // create runner instances
@@ -132,7 +133,7 @@ int main(int argc, char *argv[]) {
     run_setup_marginal_aie.start();
 
     // wait for the kernel to finish
-    run_setup_joint_aie.wait();+
+    run_setup_joint_aie.wait();
     run_setup_marginal_aie.wait();
     run_sink_from_aie.wait();
 
