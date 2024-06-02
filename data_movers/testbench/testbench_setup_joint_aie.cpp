@@ -49,8 +49,8 @@ int main(int argc, char* argv[]) {
     hls::stream<int> s_6;
     hls::stream<int> s_7;
     int image_size = 1024000;
-    int *histogram_rows = new int[SYMBOLS*SYMBOLS];
-    for (unsigned int i = 0; i < SYMBOLS*SYMBOLS; i++) {
+    int *histogram_rows = new int[LOOPS_J*8*ENTROPY_KERNELS];
+    for (unsigned int i = 0; i < (int)LOOPS_J*8*ENTROPY_KERNELS; i++) {
         histogram_rows[i] = i;
     }
     setup_joint_aie(image_size, histogram_rows, s_0, s_1, s_2, s_3, s_4, s_5, s_6, s_7);
