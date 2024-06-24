@@ -79,8 +79,6 @@ int main(int argc, char *argv[]) {
         nums_marginal[i] = i;
 
 //------------------------------------------------LOADING XCLBIN------------------------------------------    
-    for(int i = 0; i < 5; i++){
-    std::cout << i << " out of " << 5 << std::endl;
     std::string xclbin_file;
     if (!get_xclbin_path(xclbin_file))
         return EXIT_FAILURE;
@@ -189,7 +187,7 @@ int main(int argc, char *argv[]) {
     std::cout << true_result << std::endl;
 
     checkResult(tot, true_result);
-    }
+
     return 0;
     }
 

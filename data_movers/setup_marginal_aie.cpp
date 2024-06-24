@@ -37,7 +37,7 @@ void setup_marginal_aie(
 	int32_t* histogram_rows, 
 	hls::stream<ap_int<sizeof(int32_t) * 8 * 8>>& s) {
 
-	#pragma HLS interface m_axi port=histogram_rows depth=256*3 offset=slave bundle=gmem0
+	#pragma HLS interface m_axi port=histogram_rows depth=100000 offset=slave bundle=gmem0
 	#pragma HLS interface axis port=s
 	#pragma HLS interface s_axilite port=histogram_rows bundle=control
 	#pragma HLS interface s_axilite port=image_size bundle=control
