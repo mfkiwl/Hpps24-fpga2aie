@@ -144,7 +144,7 @@ public:
 		// ------kernel creation------
         joint_entropy = kernel::create(entropy_vec_kernel_function);
 	    marginal_entropy = kernel::create(marginal_entropy_kernel_function);
-        reduce = kernel::create(reduce_vec_kernel_function);
+        reduce = kernel::create(reduce_kernel_function);
 		// ------Input and Output PLIO creation------
 		// I argument: a name, that will be used to refer to the port in the block design
 		// II argument: the type of the PLIO that will be read/written. Test both plio_32_bits and plio_128_bits to verify the difference
@@ -234,7 +234,10 @@ public:
 		runtime<ratio>(marginal_entropy) = 0.9;
 
 		for(int i = 0; i < REDUCERS; i++){
-			reduce[i] = kernel::create(reduce_vec_kernel_function);
+			if (i==0)
+				reduce[i] = kernel::create(reduce_kernel_function);
+			else
+				reduce[i] = kernel::create(reduce_vec_kernel_function);
 			source(reduce[i])  = "src/reduce.cpp";
 			headers(reduce[i]) = {"src/mutual_entropy_kernels.h","../common/common.h"};
 			runtime<ratio>(reduce[i]) = 0.9;
@@ -312,7 +315,10 @@ public:
 	runtime<ratio>(marginal_entropy) = 0.9;
 
 	for(int i = 0; i < REDUCERS; i++){
-		reduce[i] = kernel::create(reduce_vec_kernel_function);
+		if (i==0)
+			reduce[i] = kernel::create(reduce_kernel_function);
+		else
+			reduce[i] = kernel::create(reduce_vec_kernel_function);
 		source(reduce[i])  = "src/reduce.cpp";
 		headers(reduce[i]) = {"src/mutual_entropy_kernels.h","../common/common.h"};
 		runtime<ratio>(reduce[i]) = 0.9;
@@ -389,7 +395,10 @@ public:
 
 		//create reducers
 		for(int i = 0; i < REDUCERS; i++){
-			reduce[i] = kernel::create(reduce_vec_kernel_function);
+			if (i==0)
+				reduce[i] = kernel::create(reduce_kernel_function);
+			else
+				reduce[i] = kernel::create(reduce_vec_kernel_function);
 			source(reduce[i])  = "src/reduce.cpp";
 			headers(reduce[i]) = {"src/mutual_entropy_kernels.h","../common/common.h"};
 			runtime<ratio>(reduce[i]) = 0.9;
@@ -485,7 +494,10 @@ public:
 		}
 		//create reducers
 		for(int i = 0; i < REDUCERS; i++){
-			reduce[i] = kernel::create(reduce_vec_kernel_function);
+			if (i==0)
+				reduce[i] = kernel::create(reduce_kernel_function);
+			else
+				reduce[i] = kernel::create(reduce_vec_kernel_function);
 			source(reduce[i])  = "src/reduce.cpp";
 			headers(reduce[i]) = {"src/mutual_entropy_kernels.h","../common/common.h"};
 			runtime<ratio>(reduce[i]) = 0.9;
@@ -581,7 +593,10 @@ public:
 		}
 		//create reducers
 		for(int i = 0; i < REDUCERS; i++){
-			reduce[i] = kernel::create(reduce_vec_kernel_function);
+			if (i==0)
+				reduce[i] = kernel::create(reduce_kernel_function);
+			else
+				reduce[i] = kernel::create(reduce_vec_kernel_function);
 			source(reduce[i])  = "src/reduce.cpp";
 			headers(reduce[i]) = {"src/mutual_entropy_kernels.h","../common/common.h"};
 			runtime<ratio>(reduce[i]) = 0.9;

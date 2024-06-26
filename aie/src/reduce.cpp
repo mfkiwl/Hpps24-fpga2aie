@@ -18,6 +18,8 @@ void reduce_kernel_function(input_stream<float>* restrict input_1, input_stream<
     x = readincr_v<8>(input_1);
     y = readincr_v<8>(input_2);
     z = fpadd(x,y);
+    aie::vector<float, 4> out = aie::broadcast<float,4>(0.0);
     float tot = aie::reduce_add(z);
-    writeincr(output, tot);
+    out[0] = tot;
+    writeincr(output, out);
 }
