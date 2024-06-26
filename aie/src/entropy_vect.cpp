@@ -17,19 +17,25 @@ void log_kernel_function(input_stream<float>* restrict input, output_stream<floa
 #ifdef ENTROPY_KERNELS
 void entropy_vec_kernel_function(input_stream<int32_t>* restrict input, output_stream<float>* restrict output){
     aie::vector<float, 8> x;
+    aie::vector<int32_t, 8> xint;
     aie::vector<float, 8> div;
     aie::vector<float, 8> acc = aie::zeros<float, 8>();
 
     aie::vector<int32_t,8> first_inputs = readincr_v<8>(input);
     int32_t img_size = first_inputs[0];
-    div = aie::broadcast<float, 8>(1.0/img_size); //initialize a vector 
+    div = aie::broadcast<float, 8>(1.0/img_size); //initialize a vector
 
-    for (int32_t i = 0; i < LOOPS_J; i++){
-        // read 8 int from input stream and cast to flow
-        x = aie::to_float(readincr_v<8>(input),0);
-        x = fpmul(div, x);
-        aie::vector<float, 8> log2x = log2v(x);
-        acc = fpmac(acc,log2x, x); 
+    aie::vector<int32_t, 8> null_vector = aie::zeros<int32_t, 8>();
+
+    for (int32_t i = 0; i < LOOPS_J; i++) chess_loop_range(LOOPS_J, LOOPS_J) {
+        // read 8 i nt from input stream and cast to flow
+        xint = readincr_v<8>(input);
+        if(aie::not_equal(xint,null_vector)){
+            x = aie::to_float(xint,0);
+            x = fpmul(div, x);
+            aie::vector<float, 8> log2x = log2v(x);
+            acc = fpmac(acc,log2x, x); 
+        }
     }
 
     writeincr(output, acc);
@@ -37,6 +43,8 @@ void entropy_vec_kernel_function(input_stream<int32_t>* restrict input, output_s
 
 void entropy_vec_pass_kernel_function(input_stream<int32_t>* restrict input_PL, input_stream<float>* restrict input_AIE, output_stream<float>* restrict output){
     aie::vector<float, 8> x;
+    aie::vector<int32_t, 8> xint;
+    aie::vector<int32_t, 8> null_vector = aie::zeros<int32_t, 8>();
     aie::vector<float, 8> div;
     aie::vector<float, 8> acc = aie::zeros<float, 8>();
 
@@ -44,12 +52,15 @@ void entropy_vec_pass_kernel_function(input_stream<int32_t>* restrict input_PL, 
     int32_t img_size = first_inputs[0];
     div = aie::broadcast<float, 8>(1.0/img_size); //initialize a vector 
 
-    for (int32_t i = 0; i < LOOPS_J; i++){
+    for (int32_t i = 0; i < LOOPS_J; i++) chess_loop_range(LOOPS_J, LOOPS_J) {
         // read 8 int from input stream and cast to flow
-        x = aie::to_float(readincr_v<8>(input_PL),0);
-        x = fpmul(div, x);
-        aie::vector<float, 8> log2x = log2v(x);
-        acc = fpmac(acc,log2x, x); 
+        xint = readincr_v<8>(input_PL);
+        if(aie::not_equal(xint,null_vector)){
+            x = aie::to_float(xint,0);
+            x = fpmul(div, x);
+            aie::vector<float, 8> log2x = log2v(x);
+            acc = fpmac(acc,log2x, x); 
+        }
     }
     
     aie::vector<float, 8> y = readincr_v<8>(input_AIE);
@@ -68,7 +79,7 @@ void marginal_entropy_kernel_function(input_stream<int32_t>* restrict input, out
     int32_t img_size = first_inputs[0];
     div = aie::broadcast<float, 8>(1.0/img_size); //initialize a vector 
 
-    for (int32_t i = 0; i < LOOPS_M; i++){
+    for (int32_t i = 0; i < LOOPS_M; i++) chess_loop_range(LOOPS_M, LOOPS_M) {
         // read 8 int from input stream and cast to flow
         x = aie::to_float(readincr_v<8>(input),0);
         x = fpmul(div, x);
@@ -92,7 +103,7 @@ void alt_marginal_entropy_kernel_function(input_stream<int32_t>* restrict input,
     float log_img_size = aie::detail::utils::log2(img_size);
     aie::vector<float, 8> divlog = aie::broadcast<float, 8>(log_img_size); //initialize a vector
 
-    for (int32_t i = 0; i < LOOPS_M; i++){
+    for (int32_t i = 0; i < LOOPS_M; i++) chess_loop_range(LOOPS_M, LOOPS_M) {
         // read 8 int from input stream and cast to flow
         aie::vector<float, 8> log2x;
         x = readincr_v<8>(input);

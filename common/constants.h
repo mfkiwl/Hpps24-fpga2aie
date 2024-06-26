@@ -43,8 +43,9 @@ typedef float data_t;
 #define ONE_JOINT_ONE_MARGINAL 2 //one kernel for marginal entropy and one for joint
 #define FOUR_PYRAMID 3 // four kernels for joint entropy and 1 for marginal. Pyramid reducer
 #define FOUR_BY_TWO_SYS_ARR 4 // 2 columns, four rows systolic array for joint entropy and 1 kernel for marginal
+#define EIGHT_BY_16_SYS_ARR 5 // 2 columns, four rows systolic array for joint entropy and 1 kernel for marginal
 
-#define GRAPH FOUR_BY_TWO_SYS_ARR
+#define GRAPH EIGHT_BY_16_SYS_ARR
 
 #if GRAPH == ONE_JOINT_ONE_MARGINAL
 	#define ENTROPY_KERNELS 1
@@ -63,6 +64,14 @@ typedef float data_t;
 	#define MARGINAL_ENTROPY_KERNELS 1
 	#define ENTROPY_KERNELS 4
 	#define REDUCERS 4 // (2 ^ KERNEL_ROWS)
+#endif
+
+#if GRAPH == EIGHT_BY_16_SYS_ARR
+	#define KERNEL_ROWS 8
+	#define KERNEL_COLUMNS 16
+	#define ENTROPY_KERNELS KERNEL_ROWS * KERNEL_COLUMNS
+	#define MARGINAL_ENTROPY_KERNELS 1
+	#define REDUCERS 7
 #endif
 
 #ifdef MARGINAL_ENTROPY_KERNELS
